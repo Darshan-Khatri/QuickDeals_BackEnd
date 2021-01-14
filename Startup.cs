@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using QuickDeals.Core.Models;
+using QuickDeals.Helper;
 using QuickDeals.Persistance;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,9 @@ namespace QuickDeals
                        ValidateAudience = false,
                    };
                });
+
+
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
 
             services.AddDbContext<DataContext>(options =>

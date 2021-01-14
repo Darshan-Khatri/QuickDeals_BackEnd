@@ -6,9 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Core\IRepositories\" />
-    <Folder Include="DTOs\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Helper\" />
     <Folder Include="Middleware\" />
     <Folder Include="Services\" />
     <Folder Include="Persistance\Repositories\" />
