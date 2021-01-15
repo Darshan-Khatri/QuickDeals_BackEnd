@@ -13,6 +13,10 @@ namespace QuickDeals.Helper
         public AutoMapperProfiles()
         {
             CreateMap<RegisterDto, AppUser>();
+
+            CreateMap<UserUpdateDto, AppUser>();
+
+            CreateMap<DealDto, Deal>();
         }
     }
 }

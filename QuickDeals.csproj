@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\IRepositories\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Middleware\" />
-    <Folder Include="Services\" />
-    <Folder Include="Persistance\Repositories\" />
   </ItemGroup>
 
   <ItemGroup>

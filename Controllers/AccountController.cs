@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
 using QuickDeals.Persistance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace QuickDeals.Controllers
@@ -18,14 +21,16 @@ namespace QuickDeals.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> userManager;
+        private readonly ITokenService tokenService;
         private readonly SignInManager<AppUser> signInManager;
         private readonly IMapper mapper;
         private readonly DataContext context;
 
-        public AccountController(UserManager<AppUser> userManager, 
-            SignInManager<AppUser> signInManager, IMapper mapper, DataContext context) 
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,
+            SignInManager<AppUser> signInManager, IMapper mapper, DataContext context)
         {
             this.userManager = userManager;
+            this.tokenService = tokenService;
             this.signInManager = signInManager;
             this.mapper = mapper;
             this.context = context;
@@ -36,7 +41,7 @@ namespace QuickDeals.Controllers
         {
             var userNameExists = await userManager.FindByNameAsync(registerDto.Username);
             if (userNameExists != null) return BadRequest("Username already exists, Use another username!");
-                
+
             var user = mapper.Map<AppUser>(registerDto);
 
             user.UserName = registerDto.Username.ToLower();
@@ -45,35 +50,34 @@ namespace QuickDeals.Controllers
 
             if (!result.Succeeded) BadRequest("Unable to create your account");
 
-            return Ok(user);
+            var RegisterObject = new UserDto
+            {
+                Username = user.UserName,
+                Token = tokenService.CreateToken(user)
+            };
+
+            return Ok(RegisterObject);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login([FromBody]LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             if (string.IsNullOrEmpty(loginDto.Username)) return NotFound();
 
             var user = await userManager.FindByNameAsync(loginDto.Username);
-
             if (user == null) return BadRequest("Username is invalid");
 
             var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded) return BadRequest("Invalid password");
 
-            var LoginObject = new LoginDto
+            var LoginObject = new UserDto
             {
                 Username = user.UserName,
-                Password = user.PasswordHash
+                Token = tokenService.CreateToken(user)
             };
 
             return Ok(LoginObject);
-        }
-
-        [HttpGet("GetUsers")]
-        public async Task<IActionResult> GetAllUser()
-        {
-            return Ok(await context.Users.ToListAsync());
         }
     }
 }

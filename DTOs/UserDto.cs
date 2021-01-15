@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.DTOs
 {
-    public class LoginDto
+    public class UserDto
     {
         [Required] public string Username { get; set; }
-
-        [StringLength(8, MinimumLength = 4)]
-        [Required] public string Password { get; set; }
-
+        
         public string Token { get; set; }
     }
 }

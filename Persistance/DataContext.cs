@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.Persistance
 {
-    public class DataContext : IdentityDbContext<AppUser, AppRole, int, 
+    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
         IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
         IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
@@ -18,9 +18,31 @@ namespace QuickDeals.Persistance
 
         }
 
+        public DbSet<Deal> Deals { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //***************************************************************
+            builder.Entity<Rating>()
+                .HasKey(k => new { k.DealId, k.UserId });
+
+            //User can like/dislike many deals
+            builder.Entity<Rating>()
+                .HasOne(u => u.User)
+                .WithMany(d => d.DealRating)
+                .HasForeignKey(fk => fk.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //A deal can get likes/dislikes from many users
+            builder.Entity<Rating>()
+                .HasOne(u => u.Deal)
+                .WithMany(d => d.DealRating)
+                .HasForeignKey(fk => fk.DealId)
+                .OnDelete(DeleteBehavior.NoAction);
+            //******************************************************************
 
             builder.Entity<AppUser>()
                 .HasMany(ur => ur.UserRoles)

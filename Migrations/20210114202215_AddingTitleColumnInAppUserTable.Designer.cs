@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuickDeals.Persistance;
 
 namespace QuickDeals.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210114202215_AddingTitleColumnInAppUserTable")]
+    partial class AddingTitleColumnInAppUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,63 +227,6 @@ namespace QuickDeals.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("QuickDeals.Core.Models.Deal", b =>
-                {
-                    b.Property<int>("DealId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DealId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Deals");
-                });
-
-            modelBuilder.Entity("QuickDeals.Core.Models.Rating", b =>
-                {
-                    b.Property<int>("DealId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("DisLike")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Like")
-                        .HasColumnType("bit");
-
-                    b.HasKey("DealId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("QuickDeals.Core.Models.AppRole", null)
@@ -337,36 +282,6 @@ namespace QuickDeals.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("QuickDeals.Core.Models.Deal", b =>
-                {
-                    b.HasOne("QuickDeals.Core.Models.AppUser", "AppUser")
-                        .WithMany("Deals")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("QuickDeals.Core.Models.Rating", b =>
-                {
-                    b.HasOne("QuickDeals.Core.Models.Deal", "Deal")
-                        .WithMany("DealRating")
-                        .HasForeignKey("DealId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("QuickDeals.Core.Models.AppUser", "User")
-                        .WithMany("DealRating")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Deal");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("QuickDeals.Core.Models.AppRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -374,16 +289,7 @@ namespace QuickDeals.Migrations
 
             modelBuilder.Entity("QuickDeals.Core.Models.AppUser", b =>
                 {
-                    b.Navigation("DealRating");
-
-                    b.Navigation("Deals");
-
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("QuickDeals.Core.Models.Deal", b =>
-                {
-                    b.Navigation("DealRating");
                 });
 #pragma warning restore 612, 618
         }
