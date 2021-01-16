@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
 using QuickDeals.Extensions;
@@ -12,37 +15,40 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.Controllers
 {
-
+    [Authorize]
     public class DealsController : BaseApiController
     {
-        private readonly IMapper mapper;
+        
         private readonly DataContext context;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DealsController(IMapper mapper, DataContext context)
+        public DealsController(DataContext context, IUnitOfWork unitOfWork)
         {
-            this.mapper = mapper;
             this.context = context;
+            this.unitOfWork = unitOfWork;
         }
 
+        [HttpPost("PostNewDeal")]
         public async Task<ActionResult> CreateDeal(DealDto dealDto)
         {
-            var userId = User.GetUserId();
-            if (userId == 0) return Unauthorized();
+            var username = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
+            if (username == null) return Unauthorized();
 
-            var deal = new Deal
-            {
-                Title = dealDto.Title,
-                Content = dealDto.Content,
-                Price = dealDto.Price,
-                Url = dealDto.Url,
-                Created = dealDto.Created,
-                Category = dealDto.Category,
-                AppUserId = userId
-            };
+            var deal = unitOfWork.DealRepository.PostDeal(dealDto);
+            deal.AppUserId = User.GetUserId();
+            if (deal == null) return BadRequest("Deal object is null");
 
-            var result = await context.Deals.AddAsync(deal);
-            return Ok(dealDto);
-            
+            await context.Deals.AddAsync(deal);
+
+            if (await unitOfWork.SaveAsync()) return NoContent();
+            return BadRequest("Error while posting new deal!!");
         }
+
+        [HttpGet("GetDeals")]
+        public async Task<ActionResult<IList<DealDto>>> GetDeals()
+        {
+            return  Ok(await unitOfWork.DealRepository.GetDeals());
+        }
+
     }
 }

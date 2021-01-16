@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QuickDeals.Core.IRepositories;
 using QuickDeals.Helper;
 using QuickDeals.Persistance;
+using QuickDeals.Persistance.Repositories;
 using QuickDeals.Services;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace QuickDeals.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration Configuration)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
           
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

@@ -8,5 +8,8 @@ namespace QuickDeals.Core.IRepositories
     public interface IUnitOfWork
     {
         Task<bool> SaveAsync();
+
+        IUserRepository UserRepository { get; }
+        IDealRepository DealRepository { get; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using QuickDeals.DTOs;
+﻿using QuickDeals.Core.Models;
+using QuickDeals.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace QuickDeals.Core.IRepositories
 {
     public interface IDealRepository
     {
-        Task<DealDto> CreateDeal(DealDto dealDto);   
+        public Deal PostDeal(DealDto dealDto);
+
+        public Task<IList<DealDto>> GetDeals();
     }
 }

@@ -9,9 +9,9 @@ namespace QuickDeals.DTOs
     {
         public string Title { get; set; }
         public string Content { get; set; }
-        public DateTime Created { get; set; }
         public string Url { get; set; }
         public string Category { get; set; }
         public double Price { get; set; }
+        public DateTime Created { get; set; }
     }
 }

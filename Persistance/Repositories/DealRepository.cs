@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using QuickDeals.Core.IRepositories;
+using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
 using System;
 using System.Collections.Generic;
@@ -18,11 +20,25 @@ namespace QuickDeals.Persistance.Repositories
             this.mapper = mapper;
             this.context = context;
         }
-
-        public Task<DealDto> CreateDeal(DealDto dealDto)
+        public Deal PostDeal(DealDto dealDto)
         {
-            
-            throw new NotImplementedException();
+            var deal = new Deal
+            {
+                Title = dealDto.Title,
+                Content = dealDto.Content,
+                Price = dealDto.Price,
+                Url = dealDto.Url,
+                Category = dealDto.Category
+            };
+
+            return deal;
+        }
+
+        public async Task<IList<DealDto>> GetDeals()
+        {
+            var deals = await context.Deals.OrderByDescending(x => x.Created).ToListAsync();
+
+            return mapper.Map<IList<DealDto>>(deals);
         }
     }
 }

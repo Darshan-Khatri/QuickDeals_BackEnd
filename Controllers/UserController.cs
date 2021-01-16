@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
 using QuickDeals.Extensions;
@@ -22,21 +23,24 @@ namespace QuickDeals.Controllers
         private readonly DataContext context;
         private readonly UserManager<AppUser> userManager;
         private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
 
-        public UserController(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
+        public UserController(DataContext context, UserManager<AppUser> userManager, IMapper mapper, IUnitOfWork unitOfWork)
         {
             this.context = context;
             this.userManager = userManager;
             this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("GetUsers")]
         public async Task<ActionResult> GetAllUser()
         {
-            var claims = User.FindFirst(ClaimTypes.Name)?.Value;
-            if (!string.IsNullOrEmpty(claims))
+            var userNameInToken = User.GetUsername();
+            if (!string.IsNullOrEmpty(userNameInToken))
             {
-                return Ok(await context.Users.ToListAsync());
+                return Ok(await unitOfWork.UserRepository.GetAllUser());
+                //return Ok(await context.Users.Include(d => d.Deals).ToListAsync());
             }
             return Unauthorized();
         }
@@ -48,7 +52,22 @@ namespace QuickDeals.Controllers
             {
                 return Unauthorized();
             }
-            var user = await userManager.FindByNameAsync(User.GetUsername());
+
+            var user = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
+            //var user = await unitOfWork.UserRepository.GetUserByUsernameWithDeals(User.GetUsername());
+            if (user != null) return Ok(user);
+            return NotFound();
+        }
+
+        [HttpGet("GetUserByUserId/{userId}")]
+        public async Task<ActionResult> GetUserDetail(int userId)
+        {
+            if (userId != User.GetUserId())
+            {
+                return Unauthorized();
+            }
+
+            var user = await unitOfWork.UserRepository.GetUserByUserId(User.GetUserId());
             if (user != null) return Ok(user);
             return NotFound();
         }
