@@ -28,11 +28,38 @@ namespace QuickDeals.Controllers
         [HttpPost("AddLike/{dealId}")]
         public async Task<ActionResult> AddLike(int dealId)
         {
+            return await LikeDislikeHelper(dealId, "like");
+        }
+
+
+        [HttpPost("AddDislike/{dealId}")]
+        public async Task<ActionResult> AddDisLike(int dealId)
+        {
+            return await LikeDislikeHelper(dealId, "dislike");
+        }
+
+        private async Task<ActionResult> LikeDislikeHelper(int dealId, string LikeDislike)
+        {
+
             var HasRatingObject = await context.Ratings
                 .AnyAsync(x => x.DealId == dealId && x.UserId == User.GetUserId());
 
             if (HasRatingObject)
             {
+                if (LikeDislike == "dislike")
+                {
+                    var IsDisLiked = await context.Ratings
+                        .AnyAsync(x => x.DealId == dealId && x.UserId == User.GetUserId() && x.DisLike == true);
+                    if (IsDisLiked) return BadRequest("You have already disliked this post");
+
+                    var ratingObject_ = await context.Ratings
+                                            .SingleOrDefaultAsync(x => x.DealId == dealId && x.UserId == User.GetUserId());
+
+                    ratingObject_.DisLike = true;
+
+                    if (await unitOfWork.SaveAsync()) return NoContent();
+                    return BadRequest("Can't dislike this deal");
+                }
                 var IsLiked = await context.Ratings
                     .AnyAsync(x => x.DealId == dealId && x.UserId == User.GetUserId() && x.Like == true);
                 if (IsLiked) return BadRequest("You have already liked this post");
@@ -48,58 +75,45 @@ namespace QuickDeals.Controllers
 
             if (!HasRatingObject)
             {
-                var rating = new Rating
+                Rating rating;
+                if (LikeDislike == "dislike")
                 {
-                    Like = true,
-                    DisLike = false,
-                    DealId = dealId,
-                    UserId = User.GetUserId()
-                };
-
+                    rating = new Rating
+                    {
+                        Like = false,
+                        DisLike = true,
+                        DealId = dealId,
+                        UserId = User.GetUserId()
+                    };
+                }
+                else
+                {
+                    rating = new Rating
+                    {
+                        Like = true,
+                        DisLike = false,
+                        DealId = dealId,
+                        UserId = User.GetUserId()
+                    };
+                }
                 var result = await context.Ratings.AddAsync(rating);
 
                 if (await unitOfWork.SaveAsync()) return NoContent();
             }
-            return BadRequest("Opps! somthing went wrong while Adding your like");
+            return BadRequest("Opps! somthing went wrong while Adding your rating");
         }
 
 
-        [HttpPost("AddDislike/{dealId}")]
-        public async Task<ActionResult> AddDisLike(int dealId)
+        [HttpGet("LikeRating/{dealId}")]
+        public async Task<ActionResult> GetLikeCount(int dealId)
         {
-            var HasRatingObject = await context.Ratings
-                .AnyAsync(x => x.DealId == dealId && x.UserId == User.GetUserId());
-
-            if (HasRatingObject)
-            {
-                var IsDisLiked = await context.Ratings
-                    .AnyAsync(x => x.DealId == dealId && x.UserId == User.GetUserId() && x.DisLike == true);
-                if (IsDisLiked) return BadRequest("You have already disliked this post");
-
-                var ratingObject = await context.Ratings
-                                        .SingleOrDefaultAsync(x => x.DealId == dealId && x.UserId == User.GetUserId());
-
-                ratingObject.DisLike = true;
-
-                if (await unitOfWork.SaveAsync()) return NoContent();
-                return BadRequest("Can't dislike this deal");
-            }
-
-            if (!HasRatingObject)
-            {
-                var rating = new Rating
-                {
-                    Like = false,
-                    DisLike = true,
-                    DealId = dealId,
-                    UserId = User.GetUserId()
-                };
-
-                var result = await context.Ratings.AddAsync(rating);
-
-                if (await unitOfWork.SaveAsync()) return NoContent();
-            }
-            return BadRequest("Opps! somthing went wrong while Adding your dislike");
+            return Ok(await unitOfWork.RatingRepository.GetLikeCount(dealId));
+        }
+        
+        [HttpGet("DislikeRating/{dealId}")]
+        public async Task<ActionResult> GetDisLikeCount(int dealId)
+        {
+            return Ok(await unitOfWork.RatingRepository.GetDisLikeCount(dealId));
         }
 
     }

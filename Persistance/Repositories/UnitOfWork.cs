@@ -26,6 +26,8 @@ namespace QuickDeals.Persistance.Repositories
 
         public IDealRepository DealRepository => new DealRepository(mapper, context);
 
+        public IRatingRepository RatingRepository => new RatingRepository(context);
+
         public async Task<bool> SaveAsync()
         {
             return await context.SaveChangesAsync() > 0;
