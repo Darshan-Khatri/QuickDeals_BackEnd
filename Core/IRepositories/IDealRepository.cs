@@ -12,5 +12,7 @@ namespace QuickDeals.Core.IRepositories
         public Deal PostDeal(DealDto dealDto);
 
         public Task<IList<DealDto>> GetDeals();
+
+        public Task<IList<DisplayDealDto>> GetDealsWithRating();
     }
 }

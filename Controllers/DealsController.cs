@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
@@ -18,7 +19,7 @@ namespace QuickDeals.Controllers
     [Authorize]
     public class DealsController : BaseApiController
     {
-        
+
         private readonly DataContext context;
         private readonly IUnitOfWork unitOfWork;
 
@@ -47,8 +48,13 @@ namespace QuickDeals.Controllers
         [HttpGet("GetDeals")]
         public async Task<ActionResult<IList<DealDto>>> GetDeals()
         {
-            return  Ok(await unitOfWork.DealRepository.GetDeals());
+            return Ok(await unitOfWork.DealRepository.GetDeals());
         }
 
+        [HttpGet("GetDealsDto")]
+        public async Task<IActionResult> getDeals()
+        {
+            return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
+        }
     }
 }

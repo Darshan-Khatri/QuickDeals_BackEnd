@@ -37,8 +37,24 @@ namespace QuickDeals.Persistance.Repositories
         public async Task<IList<DealDto>> GetDeals()
         {
             var deals = await context.Deals.OrderByDescending(x => x.Created).ToListAsync();
-
             return mapper.Map<IList<DealDto>>(deals);
+        }
+
+        public async Task<IList<DisplayDealDto>> GetDealsWithRating()
+        {
+            return (await context.Deals
+                                .Select(x => new DisplayDealDto
+                                {
+                                    Title = x.Title,
+                                    Price = x.Price,
+                                    Creator = x.AppUser.UserName,
+                                    Likes = x.DealRating.Count(c => c.Like == true),
+                                    DisLikes = x.DealRating.Count(c => c.DisLike == true),
+                                    Content = x.Content,
+                                    Created = x.Created,
+                                    Url = x.Url,
+                                    Category = x.Category
+                                }).ToListAsync());
         }
     }
 }
