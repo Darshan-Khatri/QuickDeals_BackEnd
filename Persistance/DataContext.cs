@@ -27,13 +27,13 @@ namespace QuickDeals.Persistance
 
             //***************************************************************
             builder.Entity<Rating>()
-                .HasKey(k => new { k.DealId, k.UserId });
+                .HasKey(k => new { k.DealId, k.UserId }); // Composite PK
 
             //User can like/dislike many deals
             builder.Entity<Rating>()
-                .HasOne(u => u.User)
-                .WithMany(d => d.DealRating)
-                .HasForeignKey(fk => fk.UserId)
+                .HasOne(u => u.User) //Enity used in child table
+                .WithMany(d => d.DealRating) //Parent table colletion
+                .HasForeignKey(fk => fk.UserId) // Child tables foreign key
                 .OnDelete(DeleteBehavior.NoAction);
 
             //A deal can get likes/dislikes from many users

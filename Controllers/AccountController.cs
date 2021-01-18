@@ -24,16 +24,15 @@ namespace QuickDeals.Controllers
         private readonly ITokenService tokenService;
         private readonly SignInManager<AppUser> signInManager;
         private readonly IMapper mapper;
-        private readonly DataContext context;
+        
 
         public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,
-            SignInManager<AppUser> signInManager, IMapper mapper, DataContext context)
+            SignInManager<AppUser> signInManager, IMapper mapper)
         {
             this.userManager = userManager;
             this.tokenService = tokenService;
             this.signInManager = signInManager;
             this.mapper = mapper;
-            this.context = context;
         }
 
         [HttpPost]
@@ -47,20 +46,18 @@ namespace QuickDeals.Controllers
             user.UserName = registerDto.Username.ToLower();
 
             var result = await userManager.CreateAsync(user, registerDto.Password);
-
             if (!result.Succeeded) BadRequest("Unable to create your account");
 
-            var RegisterObject = new UserDto
+            return Ok( new UserDto
             {
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user)
-            };
-
-            return Ok(RegisterObject);
+            });
+            
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto)
         {
             if (string.IsNullOrEmpty(loginDto.Username)) return NotFound();
 
