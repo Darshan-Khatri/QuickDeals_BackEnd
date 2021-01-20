@@ -9,10 +9,10 @@ namespace QuickDeals.Core.IRepositories
 {
     public interface IDealRepository
     {
-        public Deal PostDeal(DealDto dealDto);
+        public Deal PostDeal(RegisterDealDto dealDto);
 
-        public Task<IList<DealDto>> GetDeals();
+        public Task<IList<RegisterDealDto>> GetDeals();
 
-        public Task<IList<DisplayDealDto>> GetDealsWithRating();
+        public Task<IList<DealDto>> GetDealsWithRating();
     }
 }

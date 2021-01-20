@@ -9,6 +9,6 @@ namespace QuickDeals.DTOs
     {
         public string Title { get; set; }
         public string Username { get; set; }
-        public ICollection<DealDto> Deals { get; set; }
+        public ICollection<RegisterDealDto> Deals { get; set; }
     }
 }

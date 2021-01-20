@@ -32,7 +32,7 @@ namespace QuickDeals.Persistance.Repositories
             {
                 Title = u.Title,
                 Username = u.UserName,
-                Deals = mapper.Map<ICollection<DealDto>>(u.Deals)
+                Deals = mapper.Map<ICollection<RegisterDealDto>>(u.Deals)
             });
 
             return await users.ToListAsync();

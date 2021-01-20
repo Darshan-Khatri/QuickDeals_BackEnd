@@ -30,7 +30,7 @@ namespace QuickDeals.Controllers
         }
 
         [HttpPost("PostNewDeal")]
-        public async Task<ActionResult> CreateDeal(DealDto dealDto)
+        public async Task<ActionResult> CreateDeal(RegisterDealDto dealDto)
         {
             var username = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
             if (username == null) return Unauthorized();
@@ -45,10 +45,16 @@ namespace QuickDeals.Controllers
             return BadRequest("Error while posting new deal!!");
         }
 
+        //[HttpGet("GetDeals")]
+        //public async Task<ActionResult<IList<RegisterDealDto>>> GetDeals()
+        //{
+        //    return Ok(await unitOfWork.DealRepository.GetDeals());
+        //}
+        
         [HttpGet("GetDeals")]
-        public async Task<ActionResult<IList<DealDto>>> GetDeals()
+        public async Task<ActionResult<IList<RegisterDealDto>>> GetDeals()
         {
-            return Ok(await unitOfWork.DealRepository.GetDeals());
+            return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
         }
 
         [HttpGet("GetDealsDto")]

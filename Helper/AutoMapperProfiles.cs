@@ -16,11 +16,11 @@ namespace QuickDeals.Helper
 
             CreateMap<UserUpdateDto, AppUser>();
 
-            CreateMap<DealDto, Deal>();
+            CreateMap<RegisterDealDto, Deal>();
             
             CreateMap<AppUser, MemberDto>();
 
-            CreateMap<Deal, DealDto>();
+            CreateMap<Deal, RegisterDealDto>();
         }
     }
 }

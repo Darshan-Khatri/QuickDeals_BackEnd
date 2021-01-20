@@ -20,7 +20,7 @@ namespace QuickDeals.Persistance.Repositories
             this.mapper = mapper;
             this.context = context;
         }
-        public Deal PostDeal(DealDto dealDto)
+        public Deal PostDeal(RegisterDealDto dealDto)
         {
             var deal = new Deal
             {
@@ -34,17 +34,18 @@ namespace QuickDeals.Persistance.Repositories
             return deal;
         }
 
-        public async Task<IList<DealDto>> GetDeals()
+        public async Task<IList<RegisterDealDto>> GetDeals()
         {
             var deals = await context.Deals.OrderByDescending(x => x.Created).ToListAsync();
-            return mapper.Map<IList<DealDto>>(deals);
+            return mapper.Map<IList<RegisterDealDto>>(deals);
         }
 
-        public async Task<IList<DisplayDealDto>> GetDealsWithRating()
+        public async Task<IList<DealDto>> GetDealsWithRating()
         {
             return (await context.Deals
-                                .Select(x => new DisplayDealDto
+                                .Select(x => new DealDto
                                 {
+                                    Id = x.DealId,
                                     Title = x.Title,
                                     Price = x.Price,
                                     Creator = x.AppUser.UserName,
