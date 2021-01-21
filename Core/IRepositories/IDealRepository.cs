@@ -14,5 +14,7 @@ namespace QuickDeals.Core.IRepositories
         public Task<IList<RegisterDealDto>> GetDeals();
 
         public Task<IList<DealDto>> GetDealsWithRating();
+
+        public Task<IList<DealDto>> GetBestDeals();
     }
 }

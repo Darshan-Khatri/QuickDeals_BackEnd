@@ -14,11 +14,13 @@ namespace QuickDeals.Persistance.Repositories
     {
         private readonly IMapper mapper;
         private readonly DataContext context;
+       
 
         public DealRepository(IMapper mapper, DataContext context)
         {
             this.mapper = mapper;
             this.context = context;
+            
         }
         public Deal PostDeal(RegisterDealDto dealDto)
         {
@@ -55,7 +57,19 @@ namespace QuickDeals.Persistance.Repositories
                                     Created = x.Created,
                                     Url = x.Url,
                                     Category = x.Category
-                                }).ToListAsync());
+                                }).OrderByDescending(x => x.Created).ToListAsync());
         }
+
+        public async Task<IList<DealDto>> GetBestDeals()
+        {
+            var ListOfDeals = await GetDealsWithRating();
+
+            return  ListOfDeals.Where(x => x.Likes > 2).ToList();
+        }
+
+        //private async Task<int> QualifiedDealsCount(int dealId)
+        //{
+
+        //}
     }
 }
