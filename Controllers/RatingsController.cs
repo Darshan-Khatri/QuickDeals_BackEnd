@@ -57,7 +57,7 @@ namespace QuickDeals.Controllers
 
                     ratingObject_.DisLike = true;
 
-                    if (await unitOfWork.SaveAsync()) return NoContent();
+                    if (await unitOfWork.SaveAsync()) return Ok(await unitOfWork.RatingRepository.GetDisLikeCount(dealId));
                     return BadRequest("Can't dislike this deal");
                 }
                 var IsLiked = await context.Ratings
@@ -69,7 +69,7 @@ namespace QuickDeals.Controllers
 
                 ratingObject.Like = true;
 
-                if (await unitOfWork.SaveAsync()) return NoContent();
+                if (await unitOfWork.SaveAsync()) return Ok(await unitOfWork.RatingRepository.GetLikeCount(dealId));
                 return BadRequest("Can't like this deal");
             }
 
@@ -98,7 +98,11 @@ namespace QuickDeals.Controllers
                 }
                 var result = await context.Ratings.AddAsync(rating);
 
-                if (await unitOfWork.SaveAsync()) return NoContent();
+                if (await unitOfWork.SaveAsync())
+                {
+                    if (LikeDislike == "dislike") return Ok(await unitOfWork.RatingRepository.GetDisLikeCount(dealId));
+                    return Ok(await unitOfWork.RatingRepository.GetLikeCount(dealId));
+                }
             }
             return BadRequest("Opps! somthing went wrong while Adding your rating");
         }
@@ -109,7 +113,7 @@ namespace QuickDeals.Controllers
         {
             return Ok(await unitOfWork.RatingRepository.GetLikeCount(dealId));
         }
-        
+
         [HttpGet("DislikeRating/{dealId}")]
         public async Task<ActionResult> GetDisLikeCount(int dealId)
         {
