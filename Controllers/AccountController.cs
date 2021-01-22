@@ -48,10 +48,13 @@ namespace QuickDeals.Controllers
             var result = await userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) BadRequest("Unable to create your account");
 
+            var roleResult = await userManager.AddToRoleAsync(user, "Admin");
+            if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+
             return Ok( new UserDto
             {
                 Username = user.UserName,
-                Token = tokenService.CreateToken(user)
+                Token = await tokenService.CreateToken(user)
             });
             
         }
@@ -71,7 +74,7 @@ namespace QuickDeals.Controllers
             var LoginObject = new UserDto
             {
                 Username = user.UserName,
-                Token = tokenService.CreateToken(user)
+                Token = await tokenService.CreateToken(user)
             };
 
             return Ok(LoginObject);

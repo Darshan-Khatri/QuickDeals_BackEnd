@@ -16,21 +16,28 @@ namespace QuickDeals.Services
     public class TokenService : ITokenService
     {
         private readonly SymmetricSecurityKey key;
-        //private readonly UserManager<AppUser> userManager;
+        private readonly UserManager<AppUser> userManager;
 
-        public TokenService(IConfiguration config)
+        public TokenService(IConfiguration config, UserManager<AppUser> userManager)
         {
             key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-            //this.userManager = userManager;
+            this.userManager = userManager;
         }
 
-        public string CreateToken(AppUser user)
+        public async Task<string> CreateToken(AppUser user)
         {
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
             };
+
+            //*********Add role claims to token********************************
+
+            var roles = await userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            //*****************************************************************
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 

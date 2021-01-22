@@ -50,11 +50,5 @@ namespace QuickDeals.Controllers
         {
             return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
         }
-      
-        [HttpGet("BestDeals")]
-        public async Task<IActionResult> GetQualifiedDeals()
-        {
-            return Ok(await unitOfWork.DealRepository.GetBestDeals());
-        }
     }
 }

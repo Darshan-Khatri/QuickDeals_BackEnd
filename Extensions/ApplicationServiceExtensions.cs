@@ -20,6 +20,11 @@ namespace QuickDeals.Extensions
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            /***************Setting for cloudinary service******************************************/
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IPhotoService, PhotoService>();
+            /***************************************************************************************/
           
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
