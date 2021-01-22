@@ -12,7 +12,6 @@ namespace QuickDeals.Core.Models
         public DateTime LastActive { get; set; } = DateTime.UtcNow;
         public string Title { get; set; } = "New User";
 
-
         public ICollection<AppUserRole> UserRoles { get; set; }
         public ICollection<Deal> Deals { get; set; }
 

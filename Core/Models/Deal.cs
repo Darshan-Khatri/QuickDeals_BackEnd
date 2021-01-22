@@ -17,6 +17,8 @@ namespace QuickDeals.Core.Models
         public string Category { get; set; }
         [Required] public double Price { get; set; }
 
+        public ICollection<Photo> Photos { get; set; }
+
         /*It contains the foreign key of AppUser because one user can create many deals*/
         public AppUser AppUser { get; set; }
         public int AppUserId { get; set; }
