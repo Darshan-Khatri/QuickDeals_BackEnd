@@ -17,10 +17,19 @@ namespace QuickDeals.Helper
             CreateMap<UserUpdateDto, AppUser>();
 
             CreateMap<RegisterDealDto, Deal>();
-            
+
             CreateMap<AppUser, MemberDto>();
 
             CreateMap<Deal, RegisterDealDto>();
+
+            CreateMap<Deal, DealDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.DealId))
+                .ForMember(dest => dest.Likes, opt => opt.MapFrom(src =>
+                    src.DealRating.Count(c => c.Like)))
+                .ForMember(dest => dest.DisLikes, opt => opt.MapFrom(src =>
+                    src.DealRating.Count(c => c.DisLike)));
+
+
         }
     }
 }

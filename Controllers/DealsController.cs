@@ -44,25 +44,13 @@ namespace QuickDeals.Controllers
             if (await unitOfWork.SaveAsync()) return NoContent();
             return BadRequest("Error while posting new deal!!");
         }
-
-        //[HttpGet("GetDeals")]
-        //public async Task<ActionResult<IList<RegisterDealDto>>> GetDeals()
-        //{
-        //    return Ok(await unitOfWork.DealRepository.GetDeals());
-        //}
         
         [HttpGet("GetDeals")]
         public async Task<ActionResult<IList<RegisterDealDto>>> GetDeals()
         {
             return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
         }
-
-        [HttpGet("GetDealsDto")]
-        public async Task<IActionResult> getDeals()
-        {
-            return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
-        }
-
+      
         [HttpGet("BestDeals")]
         public async Task<IActionResult> GetQualifiedDeals()
         {
