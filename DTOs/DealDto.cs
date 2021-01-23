@@ -17,5 +17,6 @@ namespace QuickDeals.DTOs
         public int Likes { get; set; }
         public int DisLikes { get; set; }
         public DateTime Created { get; set; }
+        public ICollection<PhotoDto> Photos { get; set; }
     }
 }

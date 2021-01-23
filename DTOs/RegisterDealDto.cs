@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,5 +14,7 @@ namespace QuickDeals.DTOs
         public string Category { get; set; }
         public double Price { get; set; }
         public DateTime Created { get; set; }
+
+        public IFormFile Photo { get; set; }
     }
 }

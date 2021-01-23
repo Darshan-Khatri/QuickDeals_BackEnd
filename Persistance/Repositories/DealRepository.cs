@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
@@ -15,13 +16,11 @@ namespace QuickDeals.Persistance.Repositories
     {
         private readonly IMapper mapper;
         private readonly DataContext context;
-
-
+        
         public DealRepository(IMapper mapper, DataContext context)
         {
             this.mapper = mapper;
             this.context = context;
-
         }
         public Deal PostDeal(RegisterDealDto dealDto)
         {
@@ -35,12 +34,6 @@ namespace QuickDeals.Persistance.Repositories
             };
 
             return deal;
-        }
-
-        public async Task<IList<RegisterDealDto>> GetDeals()
-        {
-            var deals = await context.Deals.OrderByDescending(x => x.Created).ToListAsync();
-            return mapper.Map<IList<RegisterDealDto>>(deals);
         }
 
         public async Task<IList<DealDto>> GetDealsWithRating()
@@ -70,6 +63,8 @@ namespace QuickDeals.Persistance.Repositories
 
             return await LazyLoadingQuery.Where(x => x.Likes > 2).ToListAsync();
         }
+
+       
 
     }
 }

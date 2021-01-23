@@ -27,8 +27,12 @@ namespace QuickDeals.Helper
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src =>
                     src.DealRating.Count(c => c.Like)))
                 .ForMember(dest => dest.DisLikes, opt => opt.MapFrom(src =>
-                    src.DealRating.Count(c => c.DisLike)));
+                    src.DealRating.Count(c => c.DisLike)))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => 
+                    src.AppUser.UserName));
 
+
+            CreateMap<Photo, PhotoDto>();
 
         }
     }

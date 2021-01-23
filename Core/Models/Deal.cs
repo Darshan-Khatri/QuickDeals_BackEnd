@@ -8,6 +8,7 @@ namespace QuickDeals.Core.Models
 {
     public class Deal
     {
+
         public int DealId { get; set; }
 
         [Required] public string Title { get; set; }
@@ -27,5 +28,11 @@ namespace QuickDeals.Core.Models
         /*One Deal can get many likes and dislikes****************************************/
         public ICollection<Rating> DealRating { get; set; }
         //********************************************************************************
+
+        public Deal()
+        {
+            Photos = new HashSet<Photo>();
+            DealRating = new HashSet<Rating>();
+        }
     }
 }

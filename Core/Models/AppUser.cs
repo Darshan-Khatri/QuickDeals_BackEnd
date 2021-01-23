@@ -17,5 +17,12 @@ namespace QuickDeals.Core.Models
 
 
         public ICollection<Rating> DealRating { get; set; }
+
+        public AppUser()
+        {
+            DealRating = new HashSet<Rating>();
+            Deals = new HashSet<Deal>();
+            UserRoles = new HashSet<AppUserRole>();
+        }
     }
 }
