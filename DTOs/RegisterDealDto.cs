@@ -15,6 +15,6 @@ namespace QuickDeals.DTOs
         public double Price { get; set; }
         public DateTime Created { get; set; }
 
-        public IFormFile Photo { get; set; }
+        public List<IFormFile> Photo { get; set; }
     }
 }

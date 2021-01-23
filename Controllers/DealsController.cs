@@ -32,23 +32,36 @@ namespace QuickDeals.Controllers
         }
 
         [HttpPost("PostNewDeal")]
-        public async Task<ActionResult> CreateDeal([FromForm]IFormFile file ,[FromForm]RegisterDealDto dealDto)
+        public async Task<ActionResult> CreateDeal([FromForm]List<IFormFile> file ,[FromForm]RegisterDealDto dealDto)
         {
             var username = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
             if (username == null) return Unauthorized();
 
-            var result = await photoService.AddPhotoAsync(file);
-            if (result.Error != null) { return BadRequest("Problem occured during photo upload to server."); }
-            var photo = new Photo
+            if (file == null || file.Count == 0) BadRequest("Unable to fetch photos from the Form");
+            var photoCollection = new List<Photo>();
+            foreach (IFormFile item in file)
             {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId
-            };
+                var result = await photoService.AddPhotoAsync(item);
+                if (result.Error != null) { return BadRequest("Problem occured during photo upload to server."); }
+                var photo = new Photo
+                {
+                    Url = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId
+                };
+                if (photo == null) return BadRequest("Photo object is null");
+                photoCollection.Add(photo);
+            }
 
             var deal = unitOfWork.DealRepository.PostDeal(dealDto);
             deal.AppUserId = User.GetUserId();
-            if (photo == null) return BadRequest("Photo object is null");
-            deal.Photos.Add(photo);
+            if (photoCollection == null || photoCollection.Count == 0) 
+                return BadRequest("photoCollection is null");
+
+            foreach (var photo in photoCollection)
+            {
+                deal.Photos.Add(photo);
+            }
+
 
             if (deal == null) return BadRequest("Deal object is null");
 
