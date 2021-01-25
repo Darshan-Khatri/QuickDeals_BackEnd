@@ -64,7 +64,12 @@ namespace QuickDeals.Persistance.Repositories
             return await LazyLoadingQuery.Where(x => x.Likes > 2).ToListAsync();
         }
 
-       
+        public async Task<DealDto> GetDeal(int dealId)
+        {
+            return await context.Deals.Where(x => x.DealId == dealId)
+                                    .ProjectTo<DealDto>(mapper.ConfigurationProvider)
+                                    .FirstOrDefaultAsync();
+        }
 
     }
 }

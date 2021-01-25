@@ -76,6 +76,14 @@ namespace QuickDeals.Controllers
         {
             return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
         }
+
+        [HttpGet("GetDeal/{dealId}")]
+        public async Task<ActionResult> GetDeal(int dealId)
+        {
+            var deal = await unitOfWork.DealRepository.GetDeal(dealId);
+            if (deal == null) NotFound();
+            return Ok(deal);
+        }
         
         [HttpPost("add-photo/{dealID}")]
         private async Task<ActionResult> AddPhoto(IFormFile file, int dealId)
