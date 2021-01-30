@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuickDeals.Core.IRepositories;
+using QuickDeals.Core.Models;
 using QuickDeals.Extensions;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,25 @@ namespace QuickDeals.Controllers
         }
 
         [Authorize(Policy = "RequireAdminRole")]
-        [HttpPost("{dealId}")]
+        [HttpPost("Approve/{dealId}")]
         public async Task<ActionResult> ApproveDeal(int dealId)
         {
             
             var bestDeal = await unitOfWork.AdminRepository.ApproveDeal(dealId);
-            if (bestDeal == null) return BadRequest("bestDeal object is null"); 
+            return await ApplyChangesToDB(bestDeal);
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPost("Reject/{dealId}")]
+        public async Task<ActionResult> RejectDeal(int dealId)
+        {
+            var bestDeal = await unitOfWork.AdminRepository.RejectDeal(dealId);
+            return await ApplyChangesToDB(bestDeal);
+        }
+
+        private async Task<ActionResult> ApplyChangesToDB(BestDeal bestDeal)
+        {
+            if (bestDeal == null) return BadRequest("bestDeal object is null");
             bestDeal.AppUserId = User.GetUserId();
 
 

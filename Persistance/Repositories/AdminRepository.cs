@@ -36,6 +36,17 @@ namespace QuickDeals.Persistance.Repositories
             await context.BestDeals.AddAsync(bestDeal);
         }
 
+        public async Task<BestDeal> RejectDeal(int dealId)
+        {
+            var deal = await context.Deals.FindAsync(dealId);
 
+            var bestDeal = new BestDeal
+            {
+                DealId = deal.DealId,
+                IsApproved = false,
+            };
+
+            return bestDeal;
+        }
     }
 }

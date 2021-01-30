@@ -11,5 +11,7 @@ namespace QuickDeals.Core.IRepositories
         public Task<BestDeal> ApproveDeal(int dealId);
 
         public Task InsertIntoBestDealTable(BestDeal bestDeal);
+
+        public Task<BestDeal> RejectDeal(int dealId);
     }
 }
