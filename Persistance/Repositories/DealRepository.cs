@@ -58,8 +58,11 @@ namespace QuickDeals.Persistance.Repositories
             ******So this is another used case of when to use LazyLoading query*************************
              => When you want to perform sub-query.
              */
+
+            //We are fetching only deal which is not present in BestDeal table and also it has rating > 2
             var LazyLoadingQuery = context.Deals
-                           .ProjectTo<DealDto>(mapper.ConfigurationProvider);
+                            .Where(x => x.BestDeals.All(y => y.DealId != x.DealId))
+                            .ProjectTo<DealDto>(mapper.ConfigurationProvider);
 
             return await LazyLoadingQuery.Where(x => x.Likes > 2).ToListAsync();
         }
