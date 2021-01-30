@@ -26,16 +26,16 @@ namespace QuickDeals.Controllers
         }
 
         [HttpPost("AddLike/{dealId}")]
-        public async Task<ActionResult> AddLike(int dealId)
+        public async Task<ActionResult<int>> AddLike(int dealId)
         {
-            return await LikeDislikeHelper(dealId, "like");
+            return  Ok(await LikeDislikeHelper(dealId, "like"));   
         }
 
 
         [HttpPost("AddDislike/{dealId}")]
         public async Task<ActionResult> AddDisLike(int dealId)
         {
-            return await LikeDislikeHelper(dealId, "dislike");
+            return Ok(await LikeDislikeHelper(dealId, "dislike"));
         }
 
         private async Task<ActionResult> LikeDislikeHelper(int dealId, string LikeDislike)

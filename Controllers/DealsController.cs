@@ -19,7 +19,6 @@ namespace QuickDeals.Controllers
     [Authorize]
     public class DealsController : BaseApiController
     {
-
         private readonly DataContext context;
         private readonly IUnitOfWork unitOfWork;
         private readonly IPhotoService photoService;
@@ -32,12 +31,13 @@ namespace QuickDeals.Controllers
         }
 
         [HttpPost("PostNewDeal")]
-        public async Task<ActionResult> CreateDeal([FromForm]List<IFormFile> file ,[FromForm]RegisterDealDto dealDto)
+        public async Task<ActionResult> CreateDeal([FromForm]List<IFormFile> fileData, [FromForm]RegisterDealDto dealDto)
         {
+            var file = Request.Form.Files;
             var username = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
             if (username == null) return Unauthorized();
 
-            if (file == null || file.Count == 0) BadRequest("Unable to fetch photos from the Form");
+            if (file == null || file.Count == 0) return BadRequest("Unable to fetch photos from the Form");
             var photoCollection = new List<Photo>();
             foreach (IFormFile item in file)
             {
@@ -85,22 +85,22 @@ namespace QuickDeals.Controllers
             return Ok(deal);
         }
         
-        [HttpPost("add-photo/{dealID}")]
-        private async Task<ActionResult> AddPhoto(IFormFile file, int dealId)
-        {
-            var result = await photoService.AddPhotoAsync(file);
+        //[HttpPost("add-photo/{dealID}")]
+        //private async Task<ActionResult> AddPhoto(IFormFile file, int dealId)
+        //{
+        //    var result = await photoService.AddPhotoAsync(file);
 
-            if (result.Error != null) { return null; }
+        //    if (result.Error != null) { return null; }
 
-            var photo = new Photo
-            {
-                Id = dealId,
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId
-            };
+        //    var photo = new Photo
+        //    {
+        //        Id = dealId,
+        //        Url = result.SecureUrl.AbsoluteUri,
+        //        PublicId = result.PublicId
+        //    };
 
-            if (photo == null) return null;
-            return Ok(photo);
-        }
+        //    if (photo == null) return null;
+        //    return Ok(photo);
+        //}
     }
 }

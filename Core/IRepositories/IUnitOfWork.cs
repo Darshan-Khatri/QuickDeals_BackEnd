@@ -12,5 +12,6 @@ namespace QuickDeals.Core.IRepositories
         IUserRepository UserRepository { get; }
         IDealRepository DealRepository { get; }
         IRatingRepository RatingRepository { get; }
+        IAdminRepository AdminRepository { get; }
     }
 }

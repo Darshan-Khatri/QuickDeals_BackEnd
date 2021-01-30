@@ -29,10 +29,13 @@ namespace QuickDeals.Core.Models
         public ICollection<Rating> DealRating { get; set; }
         //********************************************************************************
 
+        public ICollection<BestDeal> BestDeals { get; set; }
+
         public Deal()
         {
             Photos = new HashSet<Photo>();
             DealRating = new HashSet<Rating>();
+            BestDeals = new HashSet<BestDeal>();
         }
     }
 }

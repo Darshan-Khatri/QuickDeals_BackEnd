@@ -28,6 +28,8 @@ namespace QuickDeals.Persistance.Repositories
 
         public IRatingRepository RatingRepository => new RatingRepository(context);
 
+        public IAdminRepository AdminRepository => new AdminRepository(context);
+
         public async Task<bool> SaveAsync()
         {
             return await context.SaveChangesAsync() > 0;
