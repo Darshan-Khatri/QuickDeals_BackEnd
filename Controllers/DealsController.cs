@@ -84,7 +84,14 @@ namespace QuickDeals.Controllers
             if (deal == null) NotFound();
             return Ok(deal);
         }
-        
+
+        //Get list of deals which has more than 2 likes and it is approved by admin.
+        [HttpGet("FrontPageDeals")]
+        public async Task<ActionResult> GetFrontPageDeals()
+        {
+            return Ok(await unitOfWork.DealRepository.FrontPageDeals());
+        }
+
         //[HttpPost("add-photo/{dealID}")]
         //private async Task<ActionResult> AddPhoto(IFormFile file, int dealId)
         //{

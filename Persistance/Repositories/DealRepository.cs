@@ -60,6 +60,7 @@ namespace QuickDeals.Persistance.Repositories
              */
 
             //We are fetching only deal which is not present in BestDeal table and also it has rating > 2
+            //This is how you specify/write join conditions.
             var LazyLoadingQuery = context.Deals
                             .Where(x => x.BestDeals.All(y => y.DealId != x.DealId))
                             .ProjectTo<DealDto>(mapper.ConfigurationProvider);
@@ -74,5 +75,13 @@ namespace QuickDeals.Persistance.Repositories
                                     .FirstOrDefaultAsync();
         }
 
+        ////This is how you specify/write join conditions.
+        public async Task<IList<DealDto>> FrontPageDeals()
+        {
+            return await context.Deals
+                            .Where(x => x.BestDeals.Any(y => y.DealId == x.DealId && y.IsApproved))
+                            .ProjectTo<DealDto>(mapper.ConfigurationProvider)
+                            .ToListAsync();
+        }
     }
 }
