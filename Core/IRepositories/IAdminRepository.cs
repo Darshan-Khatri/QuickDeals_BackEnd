@@ -13,5 +13,7 @@ namespace QuickDeals.Core.IRepositories
         public Task InsertIntoBestDealTable(BestDeal bestDeal);
 
         public Task<BestDeal> RejectDeal(int dealId);
+
+        public Task<IList<string>> GetUserRole(string username);
     }
 }

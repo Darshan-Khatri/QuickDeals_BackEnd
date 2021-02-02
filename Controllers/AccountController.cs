@@ -16,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    //[Route("api/[controller]")]
+    //[ApiController]
+    public class AccountController : BaseApiController
     {
         private readonly UserManager<AppUser> userManager;
         private readonly ITokenService tokenService;
@@ -48,7 +48,7 @@ namespace QuickDeals.Controllers
             var result = await userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) BadRequest("Unable to create your account");
 
-            var roleResult = await userManager.AddToRoleAsync(user, "Admin");
+            var roleResult = await userManager.AddToRoleAsync(user, "Member");
             if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
 
             return Ok( new UserDto

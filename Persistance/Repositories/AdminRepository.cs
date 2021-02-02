@@ -12,10 +12,12 @@ namespace QuickDeals.Persistance.Repositories
     public class AdminRepository : IAdminRepository
     {
         private readonly DataContext context;
+        private readonly UserManager<AppUser> userManager;
 
-        public AdminRepository(DataContext context)
+        public AdminRepository(DataContext context, UserManager<AppUser> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
 
         public async Task<BestDeal> ApproveDeal(int dealId)
@@ -48,5 +50,13 @@ namespace QuickDeals.Persistance.Repositories
 
             return bestDeal;
         }
+
+        public async Task<IList<string>> GetUserRole(string username)
+        {
+            var user = await userManager.FindByNameAsync(username);
+            return await userManager.GetRolesAsync(user);
+        }
+
+        
     }
 }

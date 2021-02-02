@@ -49,10 +49,10 @@ namespace QuickDeals.Persistance.Repositories
         {
             /*This query is best example of lazy loading and why sometime we need to perform query with lazy loading rather than eager loading.
              1- In this query we want those deal which has more than 2 likes 
-             2- What we are doing is, we have written sub-query in first part which gets all deals with any rating.
+             2- What we are doing is, we have written sub-query in first part which gets all deals with any rating that are not part of best deals table.
              3- Then we are writing another query which filters the query which has more than 2 likes,
              NOTE:- TILL THIS MOMENT WE ARE NOT EXECUTING ANY OF OUR SUB-QUERY TO DATABASE, basically what we are doing is we are chaining or developing our queries
-             4- After our query gets completed we are executing it on database by writing ToListAsync() at the end of query.
+             4- After query gets completed we are executing it on database by writing ToListAsync() at the end of query.
              5- By doing this we are going to database only once so it improves our performance to great extent.
 
             ******So this is another used case of when to use LazyLoading query*************************
