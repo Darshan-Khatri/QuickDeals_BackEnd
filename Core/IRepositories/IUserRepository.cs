@@ -9,7 +9,7 @@ namespace QuickDeals.Core.IRepositories
 {
     public interface IUserRepository
     {
-        Task<AppUser> GetUserByUsername(string username);
+        Task<MemberDto> GetUserByUsername(string username);
         Task<AppUser> GetUserByUserId(int userId);
         Task<IEnumerable<MemberDto>> GetAllUser();
         void UpdateUser(AppUser user);

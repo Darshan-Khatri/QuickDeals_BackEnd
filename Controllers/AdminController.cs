@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.Controllers
 {
+    [Authorize(Policy = "RequireAdminRole")]
     public class AdminController : BaseApiController
     {
         private readonly IUnitOfWork unitOfWork;
@@ -23,14 +24,12 @@ namespace QuickDeals.Controllers
             this.userManager = userManager;
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("BestDeals")]
         public async Task<IActionResult> GetQualifiedDeals()
         {
             return Ok(await unitOfWork.DealRepository.GetBestDeals());
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("Approve/{dealId}")]
         public async Task<ActionResult> ApproveDeal(int dealId)
         {            
@@ -38,7 +37,6 @@ namespace QuickDeals.Controllers
             return await ApplyChangesToDB(bestDeal);
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("Reject/{dealId}")]
         public async Task<ActionResult> RejectDeal(int dealId)
         {

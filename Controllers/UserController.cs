@@ -48,13 +48,8 @@ namespace QuickDeals.Controllers
         [HttpGet("GetUser/{username}")]
         public async Task<ActionResult> GetUserDetail(string username)
         {
-            if (username.ToLower() != User.GetUsername())
-            {
-                return Unauthorized();
-            }
-
-            var user = await unitOfWork.UserRepository.GetUserByUsername(User.GetUsername());
-            //var user = await unitOfWork.UserRepository.GetUserByUsernameWithDeals(User.GetUsername());
+            var user = await unitOfWork.UserRepository.GetUserByUsername(username);
+            //var user = await unitOfWork.UserRepository.GetUserByUsernameWithDeals(username);
             if (user != null) return Ok(user);
             return NotFound();
         }

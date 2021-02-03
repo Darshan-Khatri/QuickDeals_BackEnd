@@ -43,10 +43,14 @@ namespace QuickDeals.Persistance.Repositories
             return await context.Users.FindAsync(userId);
         }
 
-        public async Task<AppUser> GetUserByUsername(string username)
+        public async Task<MemberDto> GetUserByUsername(string username)
         {
-            //return await context.Users.SingleOrDefaultAsync(u => u.UserName == username);
-            return await userManager.FindByNameAsync(username);
+            var memberDto = await context.Users.Where(x => x.UserName == username)
+                            .Include(x => x.Deals)
+                            .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
+                            .SingleOrDefaultAsync();
+            
+            return memberDto;
         }
 
         public async Task<AppUser> GetUserByUsernameWithDeals(string username)
