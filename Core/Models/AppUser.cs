@@ -20,12 +20,16 @@ namespace QuickDeals.Core.Models
 
         public ICollection<BestDeal> BestDeals { get; set; }
 
+        //One user can give many comments and each comment has only one user.
+        public ICollection<Comment> Comments { get; set; }
+
         public AppUser()
         {
             DealRating = new HashSet<Rating>();
             Deals = new HashSet<Deal>();
             UserRoles = new HashSet<AppUserRole>();
             BestDeals = new HashSet<BestDeal>();
+            Comments = new HashSet<Comment>();
         }
     }
 }

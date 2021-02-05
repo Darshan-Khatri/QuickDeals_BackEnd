@@ -31,11 +31,15 @@ namespace QuickDeals.Core.Models
 
         public ICollection<BestDeal> BestDeals { get; set; }
 
+        //One deal can have many comments and each comment has one deal
+        public ICollection<Comment> Comments { get; set; }
+
         public Deal()
         {
             Photos = new HashSet<Photo>();
             DealRating = new HashSet<Rating>();
             BestDeals = new HashSet<BestDeal>();
+            Comments = new HashSet<Comment>();
         }
     }
 }

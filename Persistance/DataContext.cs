@@ -21,6 +21,7 @@ namespace QuickDeals.Persistance
         public DbSet<Deal> Deals { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<BestDeal> BestDeals { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
