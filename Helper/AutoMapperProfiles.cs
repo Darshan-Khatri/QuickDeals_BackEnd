@@ -33,7 +33,13 @@ namespace QuickDeals.Helper
 
 
             CreateMap<Photo, PhotoDto>();
-
+            
+        
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.CommentText, opt => opt.MapFrom(src => src.comment))
+                .ForMember(dest => dest.DealId, opt => opt.MapFrom(src => src.DealId))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.AppUser.UserName))
+                .ForMember(dest => dest.CommentDate, opt => opt.MapFrom(src => src.date));
         }
     }
 }

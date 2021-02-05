@@ -29,6 +29,15 @@ namespace QuickDeals.Persistance.Repositories
         public IRatingRepository RatingRepository => new RatingRepository(context);
 
         public IAdminRepository AdminRepository => new AdminRepository(context, userManager);
+        public ICommentRepository CommentRepository => new CommentRepository(context, mapper);
+
+        public DataContext DBcontext
+        {
+            get
+            {
+                return context;
+            }
+        }
 
         public async Task<bool> SaveAsync()
         {
