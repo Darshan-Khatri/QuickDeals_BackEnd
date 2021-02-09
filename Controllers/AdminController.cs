@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace QuickDeals.Controllers
 {
-    [Authorize(Policy = "RequireAdminRole")]
     public class AdminController : BaseApiController
     {
         private readonly IUnitOfWork unitOfWork;
@@ -24,12 +23,14 @@ namespace QuickDeals.Controllers
             this.userManager = userManager;
         }
 
+        [Authorize(Policy = "RequireAdminModeratorRole")]
         [HttpGet("BestDeals")]
         public async Task<IActionResult> GetQualifiedDeals()
         {
             return Ok(await unitOfWork.DealRepository.GetBestDeals());
         }
 
+        [Authorize(Policy = "RequireAdminModeratorRole")]
         [HttpPost("Approve/{dealId}")]
         public async Task<ActionResult> ApproveDeal(int dealId)
         {            
@@ -37,6 +38,7 @@ namespace QuickDeals.Controllers
             return await ApplyChangesToDB(bestDeal);
         }
 
+        [Authorize(Policy = "RequireAdminModeratorRole")]
         [HttpPost("Reject/{dealId}")]
         public async Task<ActionResult> RejectDeal(int dealId)
         {
@@ -55,6 +57,7 @@ namespace QuickDeals.Controllers
             return BadRequest("Something went wrong while adding bestDeal");
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("GetRoles/{username}")]
         public async Task<IActionResult> GetRoles(string username)
         {
@@ -62,6 +65,7 @@ namespace QuickDeals.Controllers
             return Ok(await unitOfWork.AdminRepository.GetUserRole(username));
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("edit-user-role/{username}")]
         public async Task<ActionResult> EditUserRole(string username, [FromQuery] string roles)
         {

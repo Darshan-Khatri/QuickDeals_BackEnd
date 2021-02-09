@@ -24,6 +24,8 @@ namespace QuickDeals.Controllers
         [HttpPost("AddComment")]
         public async Task<ActionResult> AddComment(AddCommentDto addComment)
         {
+            if (string.IsNullOrEmpty(addComment.Comment)) return BadRequest("Please write your comment!!");
+
             var username = User.GetUsername();
             if (string.IsNullOrEmpty(username)) return Unauthorized("You're unauthorized");
 
