@@ -8,6 +8,7 @@ using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
 using QuickDeals.Extensions;
+using QuickDeals.Helper;
 using QuickDeals.Persistance;
 using System;
 using System.Collections.Generic;
@@ -72,9 +73,16 @@ namespace QuickDeals.Controllers
         }
         
         [HttpGet("GetDeals")]
-        public async Task<ActionResult<IList<RegisterDealDto>>> GetDeals()
+        public async Task<ActionResult> GetDeals()
         {
             return Ok(await unitOfWork.DealRepository.GetDealsWithRating());
+        }
+        [HttpGet("GetDealsPagination")]
+        public async Task<ActionResult<IEnumerable<DealDto>>> GetDealsPagi([FromQuery] PaginationParams paginationParams)
+        {
+            var query = await unitOfWork.DealRepository.GetDealsPagination(paginationParams);
+            Response.AddPaginationHeader(query.CurrentPage, query.PageSize, query.TotalCount, query.TotalPages);
+            return Ok(query);
         }
 
         [HttpGet("GetDeal/{dealId}")]

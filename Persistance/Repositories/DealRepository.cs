@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using QuickDeals.Core.IRepositories;
 using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
+using QuickDeals.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,16 @@ namespace QuickDeals.Persistance.Repositories
                             .ToListAsync();
         }
 
+        public async Task<PagedList<DealDto>> GetDealsPagination(PaginationParams paginationParams)
+        {
+            var queryable = context.Deals
+                            .ProjectTo<DealDto>(mapper.ConfigurationProvider)
+                            .OrderByDescending(x => x.Created);
+
+            return await PagedList<DealDto>.CreateAsync
+                (queryable, paginationParams.PageNumber, paginationParams.PageSize);
+        }
+
         public async Task<IList<DealDto>> GetBestDeals()
         {
             /*This query is best example of lazy loading and why sometime we need to perform query with lazy loading rather than eager loading.
@@ -74,6 +85,8 @@ namespace QuickDeals.Persistance.Repositories
                                     .ProjectTo<DealDto>(mapper.ConfigurationProvider)
                                     .FirstOrDefaultAsync();
         }
+
+        
 
         ////This is how you specify/write join conditions.
         public async Task<IList<DealDto>> FrontPageDeals()

@@ -1,5 +1,6 @@
 ﻿using QuickDeals.Core.Models;
 using QuickDeals.DTOs;
+using QuickDeals.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace QuickDeals.Core.IRepositories
         public Deal PostDeal(RegisterDealDto dealDto);
 
         public Task<IList<DealDto>> GetDealsWithRating();
+        public Task<PagedList<DealDto>> GetDealsPagination(PaginationParams paginationParams);
 
         public Task<IList<DealDto>> GetBestDeals();
 
