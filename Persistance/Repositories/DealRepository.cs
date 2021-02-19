@@ -17,7 +17,7 @@ namespace QuickDeals.Persistance.Repositories
     {
         private readonly IMapper mapper;
         private readonly DataContext context;
-        
+
         public DealRepository(IMapper mapper, DataContext context)
         {
             this.mapper = mapper;
@@ -56,6 +56,37 @@ namespace QuickDeals.Persistance.Repositories
                 (queryable, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
+        public async Task<PagedList<DealDto>> GetDealsPaginationWithFilter(DealParams dealParams)
+        {
+            var queryable = context.Deals
+                            .ProjectTo<DealDto>(mapper.ConfigurationProvider).AsNoTracking();
+
+            //Filter by category
+            if (!string.IsNullOrEmpty(dealParams.Category))
+                queryable = queryable.Where(x => x.Category == dealParams.Category);
+
+            //filter by rating
+            queryable = dealParams.Rating switch
+            {
+                "1" => queryable.Where(x => (x.Likes - x.DisLikes) >= 1),
+                "2" => queryable.Where(x => (x.Likes - x.DisLikes) >= 2),
+                "3" => queryable.Where(x => (x.Likes - x.DisLikes) >= 3),
+                _ => queryable
+            };
+
+            //sort by price
+            queryable = dealParams.Price switch
+            {
+                "highToLow" => queryable.OrderByDescending(x => x.Price),
+
+                _ => queryable.OrderBy(x => x.Price)
+            };
+
+
+            return await PagedList<DealDto>.CreateAsync
+                (queryable, dealParams.PageNumber, dealParams.PageSize);
+        }
+
         public async Task<IList<DealDto>> GetBestDeals()
         {
             /*This query is best example of lazy loading and why sometime we need to perform query with lazy loading rather than eager loading.
@@ -86,7 +117,7 @@ namespace QuickDeals.Persistance.Repositories
                                     .FirstOrDefaultAsync();
         }
 
-        
+
 
         ////This is how you specify/write join conditions.
         public async Task<IList<DealDto>> FrontPageDeals()

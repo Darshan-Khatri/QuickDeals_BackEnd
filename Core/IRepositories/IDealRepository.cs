@@ -14,6 +14,7 @@ namespace QuickDeals.Core.IRepositories
 
         public Task<IList<DealDto>> GetDealsWithRating();
         public Task<PagedList<DealDto>> GetDealsPagination(PaginationParams paginationParams);
+        public Task<PagedList<DealDto>> GetDealsPaginationWithFilter(DealParams dealParams);
 
         public Task<IList<DealDto>> GetBestDeals();
 

@@ -84,6 +84,13 @@ namespace QuickDeals.Controllers
             Response.AddPaginationHeader(query.CurrentPage, query.PageSize, query.TotalCount, query.TotalPages);
             return Ok(query);
         }
+        [HttpGet("GetDealsPaginationFilter")]
+        public async Task<ActionResult<IEnumerable<DealDto>>> GetDealsFilter([FromQuery] DealParams dealParams)
+        {
+            var query = await unitOfWork.DealRepository.GetDealsPaginationWithFilter(dealParams);
+            Response.AddPaginationHeader(query.CurrentPage, query.PageSize, query.TotalCount, query.TotalPages);
+            return Ok(query);
+        }
 
         [HttpGet("GetDeal/{dealId}")]
         public async Task<ActionResult> GetDeal(int dealId)
