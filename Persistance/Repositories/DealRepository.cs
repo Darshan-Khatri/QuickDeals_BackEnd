@@ -61,8 +61,12 @@ namespace QuickDeals.Persistance.Repositories
             var queryable = context.Deals
                             .ProjectTo<DealDto>(mapper.ConfigurationProvider).AsNoTracking();
 
+            var dealCategoryArray = new List<string>
+            {
+                "Electronics", "HouseHold", "Education","Other"
+            };
             //Filter by category
-            if (!string.IsNullOrEmpty(dealParams.Category))
+            if (!string.IsNullOrEmpty(dealParams.Category) && dealCategoryArray.Contains(dealParams.Category))
                 queryable = queryable.Where(x => x.Category == dealParams.Category);
 
             //filter by rating
@@ -74,13 +78,19 @@ namespace QuickDeals.Persistance.Repositories
                 _ => queryable
             };
 
-            //sort by price
+            //filter by price
             queryable = dealParams.Price switch
             {
-                "highToLow" => queryable.OrderByDescending(x => x.Price),
-
-                _ => queryable.OrderBy(x => x.Price)
+                "less than 100" => queryable.Where(x => x.Price <= 100),
+                "101-300" => queryable.Where(x => x.Price >= 101 && x.Price <= 300),
+                "301-500" => queryable.Where(x => x.Price >= 301 && x.Price <= 500),
+                ">500" => queryable.Where(x => x.Price > 500),
+                _ => queryable
             };
+
+            //sort by date
+            if(dealParams.Date == "new")  queryable = queryable.OrderByDescending(x => x.Created);
+            if(string.IsNullOrEmpty(dealParams.Date) || dealParams.Date != "new") queryable = queryable.OrderBy(x => x.Created);
 
 
             return await PagedList<DealDto>.CreateAsync
